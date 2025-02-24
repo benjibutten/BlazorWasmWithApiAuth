@@ -1,0 +1,40 @@
+﻿<button @onclick="FetchSecureData">Hämta skyddad data</button>
+
+<button @onclick="FetchData">Hämta data</button>
+
+<p>@result</p>
+
+@inject IHttpClientFactory HttpFactory
+@code {
+    private string result = "Tryck på knappen för att hämta data";
+    private bool useSeperateToken = false;
+
+    private async Task FetchSecureData()
+    {
+        var httpClient = HttpFactory.CreateClient(WebConstants.SecureWebApiClientName);
+
+        try
+        {
+            result = await httpClient.GetStringAsync("securedata");
+        }
+        catch (Exception ex)
+        {
+            result = $"Fel vid API-anrop: {ex.Message}";
+        }
+
+    }
+
+    private async Task FetchData()
+    {
+        var httpClient = HttpFactory.CreateClient(WebConstants.OpenWebApiClientName);
+
+        try
+        {
+            result = await httpClient.GetStringAsync("test");
+        }
+        catch (Exception ex)
+        {
+            result = $"Fel vid API-anrop: {ex.Message}";
+        }
+    }
+}
